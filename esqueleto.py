@@ -35,5 +35,5 @@ try:
     CRUD(acao)
         
 except:
-    print("hello")
+    print(f"Ola {name}, bem vindo de volta...")
     os.remove("hora.txt")
