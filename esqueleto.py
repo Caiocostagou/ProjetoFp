@@ -51,11 +51,6 @@ try:
     CRUD(acao)
     
 except:
-<<<<<<< Updated upstream
     print(f"Ola {name}, bem vindo de volta...")
-    os.remove("hora.txt")
-=======
-    
-    print("hello")
     #os.remove("hora.txt")
->>>>>>> Stashed changes
+    
