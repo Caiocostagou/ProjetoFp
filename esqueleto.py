@@ -1,6 +1,4 @@
 import os
-def create():
-    pass
 def create(tiposetreinos, exercises):
     tipo = input("Qual tipo de treino voce deseja adicionar: AMRAP(AM), EMOM(EM), For Time(FT)?\n").upper()
     
@@ -22,18 +20,8 @@ def update():
 def delete():
     pass
 def CRUD(acao):
-    while acao != "C" or acao != "C" or acao != "C" or acao != "C":
     while acao != "C" and acao != "R" and acao != "U" and acao != "D":
         acao = input("adicionar um treino (C)\nVisualizar seus treinos atuais (R)\nEditar seus treinos atuais (U)\nExcluir algum de seus treinos(D)\n").upper()
-        if acao == "C":
-            return create()
-        elif acao == "R":
-            return read()
-        elif acao == "U":
-            return update()
-        elif acao == "D":
-            return delete()
-        else:
     if acao == "C":
         return create(tiposetreinos,exercises)
     elif acao == "R":
@@ -54,7 +42,6 @@ acao = ""
 
 name = ("Thiago")
 
-tiposetreinos = {"AMRAP": "", "EMOM": "", "For Time": ""}
 tiposetreinos = {}
 
 try:
@@ -62,9 +49,13 @@ try:
     app.close()
     print(f"Ola {name}, esse eh o seu mais novo WOD Tracker\nQual sera sua proxima acao?")
     CRUD(acao)
-        
     
 except:
 <<<<<<< Updated upstream
     print(f"Ola {name}, bem vindo de volta...")
     os.remove("hora.txt")
+=======
+    
+    print("hello")
+    #os.remove("hora.txt")
+>>>>>>> Stashed changes
