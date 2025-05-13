@@ -8,10 +8,10 @@ def create(tiposetreinos, exercises):
         tempo = int(input(f"Qual a duracao, em minutos, do treino de {nometreino}:\n"))
         tiposetreinos.setdefault("AMRAP", []).append(nometreino)
         exercises[nometreino] = tempo
-        with open("hora.txt", "a") as app:
-            app.write("AMRAP {\n")
+        with open("AM.txt", "a") as app:
+            app.write("AMRAP \n")
             app.write(f"    {nometreino}:{tempo} minutos\n")
-            app.write("}")
+            
     elif tipo == "EM":
         nometreino = input("Qual o nome desse conjunto EMOM?\n")
         qnt = int(input(f"Quantos exercicios serao feitos no conjunto {nometreino}?:\n"))
@@ -23,12 +23,12 @@ def create(tiposetreinos, exercises):
             treinoem[nome] = reps
         tempo = int(input(f"Qual o tempo total de duracao, em minutos, do conjunto {nometreino}? "))
         exercises[nometreino] = tempo
-        with open("hora.txt", "a") as app:
-            app.write("\nEMOM (" + str(qnt) + ") {\n")
+        with open("EM.txt", "a") as app:
+            app.write("\nEMOM (" + str(qnt) + ")\n")
             app.write(f"    {nometreino}: {tempo} minutos\n")
             for ex, rep in treinoem.items():
                 app.write(f"        {ex}:{rep} reps\n")
-            app.write("}")
+            
 
     elif tipo == "FT":
         nometreino = input("Qual o nome desse conjunto For Time?\n")
@@ -40,17 +40,30 @@ def create(tiposetreinos, exercises):
             reps = input(f"Quantas repeticoes terao o exercicio {i+1}? ")
             treinoft[nome] = reps
         exercises[nometreino] = ""
-        with open("hora.txt", "a") as app:
-            app.write("For Time(" + str(qnt) + ") {\n")
+        with open("FT.txt", "a") as app:
+            app.write("For Time(" + str(qnt) + ")\n")
             app.write(f"    {nometreino}\n")
             for ex, rep in treinoft.items():
                 app.write(f"        {ex}:{rep} reps\n")
-            app.write("}")
     else:
         print("Tipo inválido.")
 
 def read():
-    pass
+    tipo = input("Qual tipo de treino voce deseja visualizar?\n").upper()
+    try:
+        if tipo == "AM":
+            with open("AM.txt", "r") as app:
+                print(app.read())
+        elif tipo == "EM":
+            with open("EM.txt", "r") as app:
+                print(app.read())
+        elif tipo == "FT":
+            with open("FT.txt", "r") as app:
+                print(app.read())
+        else:
+            print("tipo de treino nao reconhecido.")
+    except:
+        print("voce ainda nao tem treinos criados")
 def update():
     pass
 def delete():
@@ -76,10 +89,17 @@ acao = ""
 name = "Thiago"
 
 try:
-    with open("hora.txt", "x") as app:
+    with open("AM.txt", "x") as app:
         pass
+    with open("EM.txt", "x") as app:
+        pass
+    with open("FT.txt", "x") as app:
+        pass
+    data = input("Qual a data de hoje?\n")
     print(f"Ola {name}, esse eh o seu mais novo WOD Tracker.\nQual sera sua proxima acao?")
+    
     CRUD(acao)
 except FileExistsError:
     print(f"Ola {name}, bem-vindo de volta...")
+    data = input("Qual a data de hoje?\n")
     CRUD(acao)
