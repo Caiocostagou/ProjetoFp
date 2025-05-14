@@ -1,5 +1,21 @@
-import os  # noqa: F401
+import os
 
+
+def check(tipo):
+    state = False
+    with open(f"{tipo}.txt", "r") as app:   
+        perg = input("voce deseja vizualizar treinos de uma data especifica? S/N\n").upper()
+        if perg == "S":
+            datatreino = input("Qual data o treino que voce deseja visualizar aconteceu?\n")
+            for line in app:
+                if datatreino in line:
+                    state = True
+                    return state
+        elif perg == "N":
+            return True
+        else:
+            print("Resposta invalida")
+        return state
 
 def create(tiposetreinos, exercises):
     tipo = input("Qual tipo de treino voce deseja adicionar: AMRAP(AM), EMOM(EM), For Time(FT)?\n").upper()
@@ -52,14 +68,26 @@ def read():
     tipo = input("Qual tipo de treino voce deseja visualizar?\n").upper()
     try:
         if tipo == "AM":
-            with open("AM.txt", "r") as app:
-                print(app.read())
+            if check(tipo):
+                with open("AM.txt", "r") as app:
+                    print(app.read())
+            else:
+                print("data nao encontrada")
+
         elif tipo == "EM":
-            with open("EM.txt", "r") as app:
-                print(app.read())
+            if check(tipo):
+                with open("EM.txt", "r") as app:
+                    print(app.read())
+            else:
+                print("data nao encontrada")
+
         elif tipo == "FT":
-            with open("FT.txt", "r") as app:
-                print(app.read())
+            if check(tipo):
+                with open("FT.txt", "r") as app:
+                    print(app.read())
+            else:
+                print("data nao encontrada")
+
         else:
             print("tipo de treino nao reconhecido.")
     except:
@@ -90,7 +118,7 @@ name = "Thiago"
 
 try:
     data = input("Qual a data de hoje?(formato dd/mm/aa)\n")
-    print(f"Ola {name}, esse eh o seu mais novo WOD Tracker.\nQual sera sua proxima acao?")
+    
     with open("AM.txt", "x") as app:
         pass
     with open("AM.txt", "w") as app:
@@ -107,11 +135,11 @@ try:
         app.write("ForTime \n")
         app.write(f"{data} \n")
 
+    print(f"Ola {name}, esse eh o seu mais novo WOD Tracker.\nQual sera sua proxima acao?")
     
     CRUD(acao)
 except FileExistsError:
     print(f"Ola {name}, bem-vindo de volta...")
-    data = input("Qual a data de hoje?(formato dd/mm/aa)\n")
     with open("AM.txt", "a") as app:
         app.write(f"{data} \n")
     with open("EM.txt", "a") as app:
