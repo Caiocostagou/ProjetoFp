@@ -1,5 +1,6 @@
 import os  # noqa: F401
 
+
 def create(tiposetreinos, exercises):
     tipo = input("Qual tipo de treino voce deseja adicionar: AMRAP(AM), EMOM(EM), For Time(FT)?\n").upper()
     
@@ -9,8 +10,7 @@ def create(tiposetreinos, exercises):
         tiposetreinos.setdefault("AMRAP", []).append(nometreino)
         exercises[nometreino] = tempo
         with open("AM.txt", "a") as app:
-            app.write("AMRAP \n")
-            app.write(f"    {nometreino}:{tempo} minutos\n")
+            app.write(f"{nometreino}:{tempo} minutos\n")
             
     elif tipo == "EM":
         nometreino = input("Qual o nome desse conjunto EMOM?\n")
@@ -89,17 +89,33 @@ acao = ""
 name = "Thiago"
 
 try:
+    data = input("Qual a data de hoje?(formato dd/mm/aa)\n")
+    print(f"Ola {name}, esse eh o seu mais novo WOD Tracker.\nQual sera sua proxima acao?")
     with open("AM.txt", "x") as app:
         pass
+    with open("AM.txt", "w") as app:
+        app.write("AMRAP \n")
+        app.write(f"{data} \n")
     with open("EM.txt", "x") as app:
         pass
+    with open("EM.txt", "w") as app:
+        app.write("EMOM \n")
+        app.write(f"{data} \n")
     with open("FT.txt", "x") as app:
         pass
-    data = input("Qual a data de hoje?\n")
-    print(f"Ola {name}, esse eh o seu mais novo WOD Tracker.\nQual sera sua proxima acao?")
+    with open("FT.txt", "w") as app:
+        app.write("ForTime \n")
+        app.write(f"{data} \n")
+
     
     CRUD(acao)
 except FileExistsError:
     print(f"Ola {name}, bem-vindo de volta...")
-    data = input("Qual a data de hoje?\n")
+    data = input("Qual a data de hoje?(formato dd/mm/aa)\n")
+    with open("AM.txt", "a") as app:
+        app.write(f"{data} \n")
+    with open("EM.txt", "a") as app:
+        app.write(f"{data} \n")
+    with open("FT.txt", "a") as app:
+        app.write(f"{data} \n")
     CRUD(acao)
