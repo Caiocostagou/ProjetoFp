@@ -7,6 +7,10 @@ def linhadata(line):
     if len(partesdata) != 3:
         return False
     day, month, year = partesdata 
+    if int(day) > 31:
+        return False
+    if int(month) > 12:
+        return False
     return (
         day.isdigit() and len(day) == 2 and  
         month.isdigit() and len(month) == 2 and 
@@ -117,12 +121,43 @@ def read():
                     print()
         else:
             print("tipo de treino nao reconhecido.")
-        return CRUD(acao)
     except FileNotFoundError:
         print("voce ainda nao tem treinos criados")
-        return CRUD(acao)
+    return CRUD(acao)
 def update():
-    pass
+    tipo = input("Qual tipo de treino voce deseja editar: AMRAP(AM), EMOM(EM), For Time(FT)?\n").upper()
+    if tipo in ["AM", "EM", "FT"]:
+        datatreino = input("Qual data o treino que voce deseja editar aconteceu?\n")
+
+        if not linhadata(datatreino):
+                print("Data invalida tente novamente\n")
+                datatreino = input("Qual data o treino que voce deseja editar aconteceu?\n")
+        else:
+            with open(f"{tipo}.txt", "r") as app:
+                listatotal = app.readlines() 
+            lista = linhaatelinha(tipo,datatreino)
+            listamudar = linhaatelinha(tipo,datatreino)
+            cont = 0
+            for u in listatotal:
+                listatotal[cont] = u.replace("\n", "")
+                listatotal[cont] = listatotal[cont].strip()
+                cont += 1
+            for h in range(len(listatotal)):
+                for x in range(len(lista)):
+                    if lista[x] in listatotal[h]:
+                        listamudar[x] = input(f"{lista[x]} digite o que voce deseja que esteja escrito nessa linha:\n")
+                        listatotal[h] = listamudar[x]
+            
+            with open(f"{tipo}.txt", "w") as app: 
+                for i in range(len(listatotal)): 
+                    
+                    app.write(listatotal[i]+"\n")
+                print()
+    else:
+        print("tipo de treino invalido")
+        return CRUD(acao)
+    return CRUD(acao)
+    
 def delete():
     pass
 
@@ -198,7 +233,7 @@ def sugerir_wod():
             print(f"- {tipo}: {sugestao}")
     else:
         print("Nenhum treino encontrado para sugerir. Crie alguns treinos primeiro!")
-
+    return CRUD(acao)
 exercises = {}
 tiposetreinos = {}
 acao = ""
