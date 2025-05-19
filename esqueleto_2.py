@@ -195,10 +195,43 @@ def update():
     return CRUD(acao)
     
 def delete():
-    pass
+    tipo = input("Qual tipo de treino voce deseja deletar?\n").upper()
+    try:
+        with open(f"{tipo}.txt", "r") as app:   
+            state = 0
+            datatreino = input("Qual data o treino que voce deseja deletar aconteceu?\n")
+            for line in app:
+                if datatreino in line:
+                    state = 1
+
+        if tipo in ["AM", "EM", "FT"]:
+            if state == 1:
+                with open(f"{tipo}.txt", "r") as app:
+                    oquedeleta = app.readlines()
+                    for s in range(len(oquedeleta)):
+                        if datatreino in oquedeleta[s]:
+                            oquedeleta[s] = ""
+                    deletedata = linhaatelinha(tipo, datatreino)
+                    for i in range(len(oquedeleta)):
+                        for d in range(len(deletedata)):
+                            if deletedata[d] in oquedeleta[i]:
+                                oquedeleta[i] = ""
+                with open(f"{tipo}.txt", "w") as app:
+                    for n in range(len(oquedeleta)): 
+                        app.write(oquedeleta[n])
+            else:
+                print("data nao encontrada")
+                
+        else:
+            print("tipo de treino nao reconhecido.")
+    
+    except FileNotFoundError:
+        print("voce ainda nao tem treinos criados ou o tipo de treino digitado nao eh valido")
+    CRUD(acao)
+
 
 def CRUD(acao):
-    while acao not in ["C", "R", "U", "D","S","E","M"]:
+    while acao not in ["C", "R", "U", "D","S", "E", "M"]:
         acao = input("Adicionar um treino (C)\nVisualizar seus treinos atuais (R)\nEditar seus treinos atuais (U)\nExcluir algum de seus treinos (D)\nReceber sugestão de WOD aleatório (S)\nAdicionar, Visualizar ou Completar metas (M)\nSair (E)\n").upper()
     if acao == "C":
         return create(tiposetreinos, exercises)
