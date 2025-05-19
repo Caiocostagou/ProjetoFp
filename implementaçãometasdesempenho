@@ -1,0 +1,252 @@
+import random
+
+def metas_desempenho(data):
+    acao = input("Ação sobre metas de desempenho: Adicionar (A), Visualizar (V), Concluir (C)\n").upper()
+    if acao == "A":
+        meta = input("Descreva a meta de desempenho (ex: 'Completar 100 burpees em 5 minutos'):\n")
+        try:
+            with open("metas_desempenho.txt", "r") as file:
+                numero = len(file.readlines())
+        except FileNotFoundError:
+            numero = 0
+        with open("metas_desempenho.txt", "a") as file:
+            file.write("{" + str(numero) + "} " + meta + " (" + data + ") []\n")
+    elif acao == "V":
+        try:
+            with open("metas_desempenho.txt", "r") as file:
+                print("\nMetas de Desempenho:\n")
+                print(file.read())
+        except FileNotFoundError:
+            print("Nenhuma meta de desempenho encontrada.")
+    elif acao == "C":
+        numero = input("Digite o número da meta que deseja concluir/desconcluir:\n")
+        try:
+            with open("metas_desempenho.txt", "r") as file:
+                linhas = file.readlines()
+            for i in range(len(linhas)):
+                if "{" + numero + "}" in linhas[i]:
+                    if "[]" in linhas[i]:
+                        linhas[i] = linhas[i].replace("[]", "[X]")
+                    elif "[X]" in linhas[i]:
+                        linhas[i] = linhas[i].replace("[X]", "[]")
+            with open("metas_desempenho.txt", "w") as file:
+                for linha in linhas:
+                    file.write(linha)
+        except FileNotFoundError:
+            print("Arquivo de metas de desempenho não encontrado.")
+    else:
+        print("Ação inválida.")
+    return CRUD(acao)
+
+def metas(data):
+    acaometa = input("Acao a ser tomada: Adicionar(A), Visualizar(V), Concluir meta(C)\n").upper()
+    if acaometa == "A":
+        meta = input("Digite a meta que deseja alcancar:\n")
+        with open("metas.txt", "r") as app:
+            numerometa = len(app.readlines())
+        with open("metas.txt", "a") as app:
+            app.write("{"+ str(numerometa) + "} " + meta + " (" + data + ") []\n")
+    elif acaometa == "V":
+        with open("metas.txt", "r") as app:
+            print(app.read())
+    elif acaometa == "C":
+        acaoqual = input("Voce deseja concluir ou desconcluir uma meta: concluir(C), desconcluir(D)\n").upper()
+        if acaoqual == "C":
+            acaoconc = input("Qual o numero da meta que deseja concluir(visivel na opcao visualizar):\n")
+            with open("metas.txt", "r") as app:
+                lista = app.readlines()
+                for h in range(len(lista)):
+                    if f"[{acaoconc}]" in lista[h]:
+                        if "[]" in lista[h]:
+                            lista[h] = lista[h].replace("[]", "[X]")
+        elif acaoqual == "D":
+            acaoconc = input("Qual o numero da meta que deseja desconcluir(visivel na opcao visualizar):\n")
+            with open("metas.txt", "r") as app:
+                lista = app.readlines()
+                for h in range(len(lista)):
+                    if f"[{acaoconc}]" in lista[h]:
+                        if "[X]" in lista[h]:
+                            lista[h] = lista[h].replace("[X]", "[]")
+        else:
+            print("opcao invalida")
+        with open("metas.txt", "w") as app:  
+            for j in range(len(lista)):
+                app.write(lista[j])
+    else:
+        print("acao invalida")
+        metas(data)
+    CRUD(acao)
+
+def metas_completas(data):
+    tipo_meta = input("Você quer gerenciar Metas Normais (N) ou Metas de Desempenho (D)?\n").upper()
+    if tipo_meta == "N":
+        return metas(data)
+    elif tipo_meta == "D":
+        return metas_desempenho(data)
+    else:
+        print("Opção inválida.")
+        return CRUD(acao)
+
+def linhadata(line):
+    partesdata = line.split('/')
+    if len(partesdata) != 3:
+        return False
+    day, month, year = partesdata 
+    if int(day) > 31:
+        return False
+    if int(month) > 12:
+        return False
+    return (
+        day.isdigit() and len(day) == 2 and  
+        month.isdigit() and len(month) == 2 and 
+        year.isdigit() and len(year) == 4   
+    )
+
+def linhaatelinha(tipo, datatreino):
+    printdata = []
+    state = False 
+    with open(f"{tipo}.txt", 'r') as app:
+        for line in app:
+            line = line.strip()
+            if linhadata(line):
+                if line == datatreino:
+                    state = True 
+                    continue 
+                elif state:
+                    break  
+            elif state: 
+                printdata.append(line)
+    return printdata 
+
+def check(tipo):
+    state = 0
+    with open(f"{tipo}.txt", "r") as app:   
+        perg = input("voce deseja vizualizar treinos de uma data especifica? S/N\n").upper()
+        if perg == "S":
+            datatreino = input("Qual data o treino que voce deseja visualizar aconteceu?\n")
+            for line in app:
+                if datatreino in line:
+                    state = 1
+                    return state, datatreino
+        elif perg == "N":
+            state = 2
+            return state, "0"
+        else:
+            print("Resposta invalida")
+            return state, "0"
+
+def create(tiposetreinos, exercises):
+    tipo = input("Qual tipo de treino voce deseja adicionar: AMRAP(AM), EMOM(EM), For Time(FT)?\n").upper()
+    if tipo == "AM":
+        nometreino = input("Qual o nome do treino?\n")
+        tempo = int(input(f"Qual a duracao, em minutos, do treino de {nometreino}:\n"))
+        tiposetreinos.setdefault("AMRAP", []).append(nometreino)
+        exercises[nometreino] = tempo
+        with open("AM.txt", "a") as app:
+            app.write(f"{nometreino}:{tempo} minutos\n")
+        return CRUD(acao)
+    elif tipo == "EM":
+        nometreino = input("Qual o nome desse conjunto EMOM?\n")
+        qnt = int(input(f"Quantos exercicios serao feitos no conjunto {nometreino}?:\n"))
+        tiposetreinos.setdefault("EMOM", []).append(nometreino)
+        treinoem = {}
+        for i in range(qnt):
+            nome = input(f"Qual o nome do exercicio {i+1}? ")
+            reps = input(f"Quantas repeticoes terao o exercicio {i+1}? ")
+            treinoem[nome] = reps
+        tempo = int(input(f"Qual o tempo total de duracao, em minutos, do conjunto {nometreino}? "))
+        exercises[nometreino] = tempo
+        with open("EM.txt", "a") as app:
+            app.write(nometreino + "(" + str(qnt) + "):" + str(tempo) + "minutos\n")
+            for ex, rep in treinoem.items():
+                app.write(f"        {ex}:{rep} reps\n")
+        return CRUD(acao)
+    elif tipo == "FT":
+        nometreino = input("Qual o nome desse conjunto For Time?\n")
+        qnt = int(input(f"Quantos exercicios o conjunto {nometreino} tera?:\n"))
+        tiposetreinos.setdefault("For Time", []).append(nometreino)
+        treinoft = {}
+        for i in range(qnt):
+            nome = input(f"Qual o nome do exercicio {i+1}? ")
+            reps = input(f"Quantas repeticoes terao o exercicio {i+1}? ")
+            treinoft[nome] = reps
+        exercises[nometreino] = ""
+        with open("FT.txt", "a") as app:
+            app.write(nometreino + "(" + str(qnt) + ")\n")
+            for ex, rep in treinoft.items():
+                app.write(f"        {ex}:{rep} reps\n")
+        return CRUD(acao)
+    else:
+        print("Tipo inválido.")
+
+def read():
+    tipo = input("Qual tipo de treino voce deseja visualizar?\n").upper()
+    try:
+        state, datatreino = check(tipo)
+        if tipo in ["AM", "EM", "FT"]:
+            if state == 2:
+                with open(f"{tipo}.txt", "r") as app:
+                    print(app.read())
+            elif state == 0:
+                print("data nao encontrada")
+            else:
+                with open(f"{tipo}.txt", "r") as app:
+                    printdata = linhaatelinha(tipo, datatreino)
+                    for i in printdata:
+                        print(i)
+                    print()
+        else:
+            print("tipo de treino nao reconhecido.")
+    except FileNotFoundError:
+        print("voce ainda nao tem treinos criados")
+    return CRUD(acao)
+
+def update():
+    print("Funcionalidade de update ainda não implementada.")
+    return CRUD(acao)
+
+def delete():
+    print("Funcionalidade de delete ainda não implementada.")
+    return CRUD(acao)
+
+def sugestao_wod():
+    wods = [
+        "AMRAP 20 minutos: 5 pull-ups, 10 push-ups, 15 air squats",
+        "EMOM 12 minutos: 12 deadlifts (50% 1RM), 12 box jumps",
+        "For Time: 100 double-unders, 50 kettlebell swings, 25 burpees"
+    ]
+    print("Sugestão de WOD aleatório:\n")
+    print(random.choice(wods))
+    return CRUD(acao)
+
+def CRUD(acao):
+    tiposetreinos = {}
+    exercises = {}
+    data = input("Digite a data para registro no formato dd/mm/aaaa:\n")
+    if not linhadata(data):
+        print("Data inválida. Tente novamente.")
+        return CRUD(acao)
+    if acao == "C":
+        create(tiposetreinos, exercises)
+    elif acao == "R":
+        read()
+    elif acao == "U":
+        update()
+    elif acao == "D":
+        delete()
+    elif acao == "M":
+        metas_completas(data)
+    elif acao == "S":
+        sugestao_wod()
+    elif acao == "X":
+        print("Encerrando programa...")
+        exit()
+    else:
+        print("Ação inválida.")
+        CRUD(acao)
+
+if _name_ == "_main_":
+    while True:
+        print("Menu:\nC - Criar treino\nR - Ler treino\nU - Atualizar treino\nD - Deletar treino\nM - Metas\nS - Sugestão de WOD\nX - Sair")
+        acao = input("Escolha uma ação:\n").upper()
+        CRUD(acao)
