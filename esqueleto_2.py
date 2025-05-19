@@ -1,7 +1,43 @@
-
-
 import random
+def metas(data):
+    acaometa = input("Acao a ser tomada: Adicionar(A), Visualizar(V), Concluir meta(C)\n").upper()
+    if acaometa == "A":
+        meta = input("Digite a meta que deseja alcancar:\n")
+        with open("metas.txt", "r") as app:
+            numerometa = len(app.readlines())
+        with open("metas.txt", "a") as app:
+            app.write("{"+ str(numerometa) + "} " + meta + " (" + data + ") []\n")
+    elif acaometa == "V":
+        with open("metas.txt", "r") as app:
+            print(app.read())
+    elif acaometa == "C":
+        acaoqual = input("Voce deseja concluir ou desconcluir uma meta: concluir(C), desconcluir(D)\n").upper()
+        if acaoqual == "C":
+            acaoconc = input("Qual o numero da meta que deseja concluir(visivel na opcao visualizar):\n")
+            with open("metas.txt", "r") as app:
+                lista = app.readlines()
+                for h in range(len(lista)):
+                    if f"[{acaoconc}]" in lista[h]:
+                        if "[]" in lista[h]:
+                            lista[h] = lista[h].replace("[]", "[X]")
+        elif acaoqual == "D":
+            acaoconc = input("Qual o numero da meta que deseja desconcluir(visivel na opcao visualizar):\n")
+            with open("metas.txt", "r") as app:
+                lista = app.readlines()
+                for h in range(len(lista)):
+                    if f"[{acaoconc}]" in lista[h]:
+                        if "[X]" in lista[h]:
+                            lista[h] = lista[h].replace("[X]", "[]")
 
+        else:
+            print("opcao invalida")
+        with open("metas.txt", "w") as app:  
+            for j in range(len(lista)):
+                app.write(lista[j])
+    else:
+        print("acao invalida")
+        metas(data)
+    CRUD(acao)
 def linhadata(line):
     partesdata = line.split('/')
     if len(partesdata) != 3:
@@ -162,8 +198,8 @@ def delete():
     pass
 
 def CRUD(acao):
-    while acao not in ["C", "R", "U", "D","S","E"]:
-        acao = input("Adicionar um treino (C)\nVisualizar seus treinos atuais (R)\nEditar seus treinos atuais (U)\nExcluir algum de seus treinos (D)\nReceber sugestão de WOD aleatório (S)\nSair (E)\n").upper()
+    while acao not in ["C", "R", "U", "D","S","E","M"]:
+        acao = input("Adicionar um treino (C)\nVisualizar seus treinos atuais (R)\nEditar seus treinos atuais (U)\nExcluir algum de seus treinos (D)\nReceber sugestão de WOD aleatório (S)\nAdicionar, Visualizar ou Completar metas (M)\nSair (E)\n").upper()
     if acao == "C":
         return create(tiposetreinos, exercises)
     elif acao == "R":
@@ -174,6 +210,8 @@ def CRUD(acao):
         return delete()
     elif acao=="S":
         return sugerir_wod()
+    elif acao == "M":
+        return metas(data)
     elif acao == "E":
         pass
     else:
@@ -238,7 +276,6 @@ exercises = {}
 tiposetreinos = {}
 acao = ""
 name = "Thiago"
-
 try:
     data = input("Qual a data de hoje?(formato dd/mm/aaaa)\n")
     while True:
@@ -247,7 +284,10 @@ try:
             data = input("Qual a data de hoje?(formato dd/mm/aaaa)\n")
         else:
             break
-
+    with open("metas.txt", "x") as app:
+        pass
+    with open("metas.txt", "w") as app:
+        app.write("Lista de metas: \n")
 
     with open("AM.txt", "x") as app:
         pass
@@ -275,4 +315,7 @@ except FileExistsError:
         app.write(f"{data} \n")
     with open("FT.txt", "a") as app:
         app.write(f"{data} \n")
+    CRUD(acao)
+except ValueError:
+    print("Um numero precisa ser colocado aqui!\n")
     CRUD(acao)
