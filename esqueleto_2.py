@@ -1,22 +1,54 @@
-import os
+
+
 import random
 
+def linhadata(line):
+    partesdata = line.split('/')
+    if len(partesdata) != 3:
+        return False
+    day, month, year = partesdata 
+    return (
+        day.isdigit() and len(day) == 2 and  
+        month.isdigit() and len(month) == 2 and 
+        year.isdigit() and len(year) == 4   
+    )
 
+
+def linhaatelinha(tipo, datatreino):
+    printdata = []
+    state = False 
+
+    with open(f"{tipo}.txt", 'r') as app:
+        for line in app:
+            line = line.strip()
+
+            if linhadata(line):
+                if line == datatreino:
+                    state = True 
+                    continue 
+                elif state:
+                    break  
+
+            elif state: 
+                printdata.append(line)
+
+    return printdata 
 def check(tipo):
-    state = False
+    state = 0
     with open(f"{tipo}.txt", "r") as app:   
         perg = input("voce deseja vizualizar treinos de uma data especifica? S/N\n").upper()
         if perg == "S":
             datatreino = input("Qual data o treino que voce deseja visualizar aconteceu?\n")
             for line in app:
                 if datatreino in line:
-                    state = True
-                    return state
+                    state = 1
+                    return state, datatreino
         elif perg == "N":
-            return True
+            state = 2
+            return state, "0"
         else:
             print("Resposta invalida")
-        return state
+            return state, "0"
 
 def create(tiposetreinos, exercises):
     tipo = input("Qual tipo de treino voce deseja adicionar: AMRAP(AM), EMOM(EM), For Time(FT)?\n").upper()
@@ -28,6 +60,7 @@ def create(tiposetreinos, exercises):
         exercises[nometreino] = tempo
         with open("AM.txt", "a") as app:
             app.write(f"{nometreino}:{tempo} minutos\n")
+        return CRUD(acao)
             
     elif tipo == "EM":
         nometreino = input("Qual o nome desse conjunto EMOM?\n")
@@ -45,6 +78,7 @@ def create(tiposetreinos, exercises):
             app.write(f"    {nometreino}: {tempo} minutos\n")
             for ex, rep in treinoem.items():
                 app.write(f"        {ex}:{rep} reps\n")
+        return CRUD(acao)
             
 
     elif tipo == "FT":
@@ -62,19 +96,27 @@ def create(tiposetreinos, exercises):
             app.write(f"    {nometreino}\n")
             for ex, rep in treinoft.items():
                 app.write(f"        {ex}:{rep} reps\n")
+        return CRUD(acao)
     else:
         print("Tipo inválido.")
 
 def read():
     tipo = input("Qual tipo de treino voce deseja visualizar?\n").upper()
     try:
+        state, datatreino = check(tipo)
         if tipo == "AM":
-            if check(tipo):
+            if state == 2:
                 with open("AM.txt", "r") as app:
                     print(app.read())
-            else:
+            elif state == 0:
                 print("data nao encontrada")
 
+            else:
+                with open("AM.txt", "r") as app:
+                    printdata = linhaatelinha(tipo, datatreino)
+                    for i in printdata:
+                        print(i)
+                    print()
         elif tipo == "EM":
             if check(tipo):
                 with open("EM.txt", "r") as app:
@@ -88,19 +130,22 @@ def read():
                     print(app.read())
             else:
                 print("data nao encontrada")
+        
 
         else:
             print("tipo de treino nao reconhecido.")
-    except:
+        return CRUD(acao)
+    except FileNotFoundError:
         print("voce ainda nao tem treinos criados")
+        return CRUD(acao)
 def update():
     pass
 def delete():
     pass
 
 def CRUD(acao):
-    while acao not in ["C", "R", "U", "D","S"]:
-        acao = input("Adicionar um treino (C)\nVisualizar seus treinos atuais (R)\nEditar seus treinos atuais (U)\nExcluir algum de seus treinos (D)\nReceber sugestão de WOD aleatório (S)\n").upper()
+    while acao not in ["C", "R", "U", "D","S","E"]:
+        acao = input("Adicionar um treino (C)\nVisualizar seus treinos atuais (R)\nEditar seus treinos atuais (U)\nExcluir algum de seus treinos (D)\nReceber sugestão de WOD aleatório (S)\nSair (E)\n").upper()
     if acao == "C":
         return create(tiposetreinos, exercises)
     elif acao == "R":
@@ -111,6 +156,8 @@ def CRUD(acao):
         return delete()
     elif acao=="S":
         return sugerir_wod()
+    elif acao == "E":
+        pass
     else:
         print("\nAcao invalida tente novamente\n")
 
@@ -175,8 +222,15 @@ acao = ""
 name = "Thiago"
 
 try:
-    data = input("Qual a data de hoje?(formato dd/mm/aa)\n")
-    
+    data = input("Qual a data de hoje?(formato dd/mm/aaaa)\n")
+    while True:
+        if not linhadata(data):
+            print("Data invalida tente novamente\n")
+            data = input("Qual a data de hoje?(formato dd/mm/aaaa)\n")
+        else:
+            break
+
+
     with open("AM.txt", "x") as app:
         pass
     with open("AM.txt", "w") as app:
@@ -194,7 +248,6 @@ try:
         app.write(f"{data} \n")
 
     print(f"Ola {name}, esse eh o seu mais novo WOD Tracker.\nQual sera sua proxima acao?")
-    
     CRUD(acao)
 except FileExistsError:
     print(f"Ola {name}, bem-vindo de volta...")
