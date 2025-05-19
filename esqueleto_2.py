@@ -74,8 +74,7 @@ def create(tiposetreinos, exercises):
         tempo = int(input(f"Qual o tempo total de duracao, em minutos, do conjunto {nometreino}? "))
         exercises[nometreino] = tempo
         with open("EM.txt", "a") as app:
-            app.write("\nEMOM (" + str(qnt) + ")\n")
-            app.write(f"    {nometreino}: {tempo} minutos\n")
+            app.write(nometreino + "(" + str(qnt) + "):" + str(tempo) + "minutos\n")
             for ex, rep in treinoem.items():
                 app.write(f"        {ex}:{rep} reps\n")
         return CRUD(acao)
@@ -92,8 +91,7 @@ def create(tiposetreinos, exercises):
             treinoft[nome] = reps
         exercises[nometreino] = ""
         with open("FT.txt", "a") as app:
-            app.write("For Time(" + str(qnt) + ")\n")
-            app.write(f"    {nometreino}\n")
+            app.write(nometreino + "(" + str(qnt) + ")\n")
             for ex, rep in treinoft.items():
                 app.write(f"        {ex}:{rep} reps\n")
         return CRUD(acao)
@@ -104,34 +102,19 @@ def read():
     tipo = input("Qual tipo de treino voce deseja visualizar?\n").upper()
     try:
         state, datatreino = check(tipo)
-        if tipo == "AM":
+        if tipo in ["AM", "EM", "FT"]:
             if state == 2:
-                with open("AM.txt", "r") as app:
+                with open(f"{tipo}.txt", "r") as app:
                     print(app.read())
             elif state == 0:
                 print("data nao encontrada")
 
             else:
-                with open("AM.txt", "r") as app:
+                with open(f"{tipo}.txt", "r") as app:
                     printdata = linhaatelinha(tipo, datatreino)
                     for i in printdata:
                         print(i)
                     print()
-        elif tipo == "EM":
-            if check(tipo):
-                with open("EM.txt", "r") as app:
-                    print(app.read())
-            else:
-                print("data nao encontrada")
-
-        elif tipo == "FT":
-            if check(tipo):
-                with open("FT.txt", "r") as app:
-                    print(app.read())
-            else:
-                print("data nao encontrada")
-        
-
         else:
             print("tipo de treino nao reconhecido.")
         return CRUD(acao)
