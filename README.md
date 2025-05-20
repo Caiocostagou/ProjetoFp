@@ -26,3 +26,42 @@ AM.txt, EM.txt, FT.txt – armazenam os treinos dos respectivos formatos.
 metas.txt – registra as metas do usuário, concluídas ou não.
 
 Todos os arquivos são atualizados automaticamente pelo sistema.
+
+🚀 Como Usar
+Execute o código.
+
+Informe a data atual no formato dd/mm/aaaa.
+
+Escolha a ação desejada a partir do menu interativo:
+Adicionar um treino (C)
+Visualizar seus treinos atuais (R)
+Editar seus treinos atuais (U)
+Excluir algum de seus treinos (D)
+Receber sugestão de WOD aleatório (S)
+Adicionar, Visualizar ou Completar metas (M)
+Cardio aleatório (A)
+Sair (E)
+🧠Lógica de Funcionamento
+O programa armazena treinos em arquivos .txt com base na data inserida.
+
+Ao visualizar treinos, é possível buscar por data específica ou ver todos.
+
+Metas são armazenadas com um identificador numérico e podem ser concluídas/desconcluídas.
+
+A função CRUD() serve como central para todas as operações do sistema.
+
+⚠️ Requisitos
+Python 3.x
+
+Nenhuma biblioteca externa é necessária (usa apenas bibliotecas nativas).
+
+📌 Observações
+O sistema cria os arquivos necessários na primeira execução.
+
+Treinos e metas são persistentes e salvos localmente.
+
+Há validação de data e tratamento básico de erros de entrada.
+
+👤 Autores:
+.Nomes:Arthur Andrade,Caio Costa,Gabiel Ricardo,Vinicius Tenorio,telmo
+.Propósito: Projeto pessoal para organizar e acompanhar treinos de CrossFit
