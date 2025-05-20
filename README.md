@@ -63,5 +63,5 @@ Treinos e metas são persistentes e salvos localmente.
 Há validação de data e tratamento básico de erros de entrada.
 
 👤 Autores:
-.Nomes:Arthur Andrade,Caio Costa,Gabiel Ricardo,Vinicius Tenorio,telmo
+.Nomes:Arthur Andrade,Caio Costa,Gabiel Ricardo,Vinicius Tenorio, Telmo Calheiros
 .Propósito: Projeto pessoal para organizar e acompanhar treinos de CrossFit
